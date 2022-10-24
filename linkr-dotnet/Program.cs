@@ -48,7 +48,7 @@ app.MapGet("/{id}", async (string id, ILinkRepo linkRepo) =>
     .WithMetadata(new SwaggerOperationAttribute("Get redirection", "Get redirection by url id"));
 
 
-app.MapPost("/", async (LinkDTO linkDto, ILinkRepo linkRepo) =>
+app.MapPost("/", async (LinkDTO linkDto, ILinkRepo linkRepo, IConfiguration configuration) =>
 {
     var link = linkDto?.Link;
 
@@ -69,7 +69,7 @@ app.MapPost("/", async (LinkDTO linkDto, ILinkRepo linkRepo) =>
 
     var id = Utility.GenerateString(idLength);
     await linkRepo.PutLink(new Link { Id = id, Url = link });
-    return Results.Ok("http://localhost:5265/" + id);
+    return Results.Ok($"{configuration["DOMAIN"]}/{id}");
 })
     .Produces(StatusCodes.Status200OK)
     .Produces<ResponseModel>(StatusCodes.Status400BadRequest)
